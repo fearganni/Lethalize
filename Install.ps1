@@ -12,51 +12,34 @@ function Get-PlatformInfo {
     }
 }
 
+function Request-String($url) {
+    $webClient = New-Object System.Net.WebClient
+    $webClient.Headers.Add("User-Agent", "Lethal Mod Installer PowerShell Script")
+    return $webClient.DownloadString($url)
+}
 function Request-Stream($url) {
     $webClient = New-Object System.Net.WebClient
     $webClient.Headers.Add("User-Agent", "Lethal Mod Installer PowerShell Script")
-
-    # Create a temporary file path
-    $tempFile = [System.IO.Path]::GetTempFileName()
-
-    # Register download progress event
-    $eventSubscription = Register-ObjectEvent -InputObject $webClient -EventName DownloadProgressChanged -Action {
-        param($sender, $e)
-        Write-Progress -Activity "Downloading" -Status ("{0} MB of {1} MB. {2}%" -f [math]::Round($e.BytesReceived / 1MB, 2), [math]::Round($e.TotalBytesToReceive / 1MB, 2), $e.ProgressPercentage) -PercentComplete $e.ProgressPercentage
-    }
-
-    # Download the file
-    try {
-        $webClient.DownloadFile($url, $tempFile)
-    } catch {
-        $webClient.Dispose()
-    } finally {
-        # Clean up the event registration
-        Unregister-Event -SourceIdentifier $eventSubscription.Name
-        Remove-Job -Name $eventSubscription.Name
-    }
-
-    # Read the file into a memory stream
-    $memoryStream = New-Object System.IO.MemoryStream
-    $fileStream = [System.IO.File]::OpenRead($tempFile)
-    $fileStream.CopyTo($memoryStream)
-    $memoryStream.Seek(0, [System.IO.SeekOrigin]::Begin)
-
-    # Clean up
-    $fileStream.Close()
-    Remove-Item $tempFile
-
-    return $memoryStream
+    return [System.IO.MemoryStream]::new($webClient.DownloadData($url))
 }
 
 function Expand-Stream($zipStream, $destination) {
+    # Create a temporary file to save the stream content
     $tempFilePath = [System.IO.Path]::GetTempFileName()
+
+    # replace the temporary file extension with .zip
     $tempFilePath = [System.IO.Path]::ChangeExtension($tempFilePath, "zip")
+
+    # Save the stream content to the temporary file
     $zipStream.Seek(0, [System.IO.SeekOrigin]::Begin)
     $fileStream = [System.IO.File]::OpenWrite($tempFilePath)
     $zipStream.CopyTo($fileStream)
     $fileStream.Close()
+
+    # extract the temporary file to the destination folder
     Expand-Archive -Path $tempFilePath -DestinationPath $destination -Force
+
+    # Delete the temporary file
     Remove-Item -Path $tempFilePath -Force
 }
 
@@ -73,7 +56,7 @@ function Get-Arg($arguments, $argName) {
 function Install ($arguments) {
     Write-Host "Please send thanks to Daddy Ganni 🙏`n"
 
-    $response = Request-Stream "https://api.github.com/repos/BepInEx/BepInEx/releases/latest"
+    $response = Request-String "https://api.github.com/repos/BepInEx/BepInEx/releases/latest"
     $jsonObject = ConvertFrom-Json $response
     $platform2Asset = @{}
 
