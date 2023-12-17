@@ -13,26 +13,26 @@ function Get-PlatformInfo {
 }
 
 function Request-Stream($url) {
-    $httpClient = New-Object System.Net.Http.HttpClient
-    $httpClient.DefaultRequestHeaders.Add("User-Agent", "Lethal Mod Installer PowerShell Script")
+    $webClient = New-Object System.Net.WebClient
+    $webClient.Headers.Add("User-Agent", "Lethal Mod Installer PowerShell Script")
 
-    $response = $httpClient.GetAsync($url, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).Result
-    $contentStream = $response.Content.ReadAsStreamAsync().Result
-
-    $totalBytes = $response.Content.Headers.ContentLength
-    $totalRead = 0
-    $buffer = New-Object byte[](1024 * 1024)  # 1MB buffer
-    $progressStream = New-Object System.IO.MemoryStream
-
-    while (($read = $contentStream.Read($buffer, 0, $buffer.Length)) -gt 0) {
-        $progressStream.Write($buffer, 0, $read)
-        $totalRead += $read
-        $percentComplete = ($totalRead / $totalBytes) * 100
-        Write-Progress -Activity "Downloading" -Status "$percentComplete% Complete" -PercentComplete $percentComplete
+    # Event handler for download progress
+    $webClient.DownloadProgressChanged += {
+        param($sender, $e)
+        Write-Progress -Activity "Downloading" -Status ("{0} MB of {1} MB. {2}%" -f [math]::Round($e.BytesReceived / 1MB, 2), [math]::Round($e.TotalBytesToReceive / 1MB, 2), $e.ProgressPercentage) -PercentComplete $e.ProgressPercentage
     }
 
-    $progressStream.Seek(0, [System.IO.SeekOrigin]::Begin)
-    return $progressStream
+    # Download data asynchronously
+    $downloadTask = [System.Threading.Tasks.Task]::Factory.FromAsync(
+        [System.Func[System.Uri, [System.AsyncCallback], [Object], [System.IAsyncResult]]]$webClient.BeginDownloadData,
+        [System.Func[[System.IAsyncResult], [Byte[]]]]$webClient.EndDownloadData,
+        (New-Object System.Uri($url)), $null)
+
+    # Wait for the download to complete
+    $downloadTask.Wait()
+
+    # Return a MemoryStream with the downloaded data
+    return New-Object System.IO.MemoryStream($downloadTask.Result, 0, $downloadTask.Result.Length)
 }
 
 function Expand-Stream($zipStream, $destination) {
