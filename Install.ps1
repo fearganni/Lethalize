@@ -16,23 +16,34 @@ function Request-Stream($url) {
     $webClient = New-Object System.Net.WebClient
     $webClient.Headers.Add("User-Agent", "Lethal Mod Installer PowerShell Script")
 
-    # Event handler for download progress
-    $webClient.DownloadProgressChanged += {
+    # Create a temporary file path
+    $tempFile = [System.IO.Path]::GetTempFileName()
+
+    # Register download progress event
+    Register-ObjectEvent -InputObject $webClient -EventName DownloadProgressChanged -Action {
         param($sender, $e)
         Write-Progress -Activity "Downloading" -Status ("{0} MB of {1} MB. {2}%" -f [math]::Round($e.BytesReceived / 1MB, 2), [math]::Round($e.TotalBytesToReceive / 1MB, 2), $e.ProgressPercentage) -PercentComplete $e.ProgressPercentage
     }
 
-    # Download data asynchronously
-    $downloadTask = [System.Threading.Tasks.Task]::Factory.FromAsync(
-        [System.Func[System.Uri, [System.AsyncCallback], [Object], [System.IAsyncResult]]]$webClient.BeginDownloadData,
-        [System.Func[[System.IAsyncResult], [Byte[]]]]$webClient.EndDownloadData,
-        (New-Object System.Uri($url)), $null)
+    # Download the file
+    try {
+        $webClient.DownloadFile($url, $tempFile)
+    } finally {
+        # Clean up the event registration
+        Unregister-Event -SourceIdentifier ([System.Management.Automation.PSEventArgs]$EventSubscriber.SourceIdentifier).EventName
+    }
 
-    # Wait for the download to complete
-    $downloadTask.Wait()
+    # Read the file into a memory stream
+    $memoryStream = New-Object System.IO.MemoryStream
+    $fileStream = [System.IO.File]::OpenRead($tempFile)
+    $fileStream.CopyTo($memoryStream)
+    $memoryStream.Seek(0, [System.IO.SeekOrigin]::Begin)
 
-    # Return a MemoryStream with the downloaded data
-    return New-Object System.IO.MemoryStream($downloadTask.Result, 0, $downloadTask.Result.Length)
+    # Clean up
+    $fileStream.Close()
+    Remove-Item $tempFile
+
+    return $memoryStream
 }
 
 function Expand-Stream($zipStream, $destination) {
