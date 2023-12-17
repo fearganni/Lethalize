@@ -20,7 +20,7 @@ function Request-Stream($url) {
     $tempFile = [System.IO.Path]::GetTempFileName()
 
     # Register download progress event
-    Register-ObjectEvent -InputObject $webClient -EventName DownloadProgressChanged -Action {
+    $eventSubscription = Register-ObjectEvent -InputObject $webClient -EventName DownloadProgressChanged -Action {
         param($sender, $e)
         Write-Progress -Activity "Downloading" -Status ("{0} MB of {1} MB. {2}%" -f [math]::Round($e.BytesReceived / 1MB, 2), [math]::Round($e.TotalBytesToReceive / 1MB, 2), $e.ProgressPercentage) -PercentComplete $e.ProgressPercentage
     }
@@ -28,9 +28,12 @@ function Request-Stream($url) {
     # Download the file
     try {
         $webClient.DownloadFile($url, $tempFile)
+    } catch {
+        $webClient.Dispose()
     } finally {
         # Clean up the event registration
-        Unregister-Event -SourceIdentifier ([System.Management.Automation.PSEventArgs]$EventSubscriber.SourceIdentifier).EventName
+        Unregister-Event -SourceIdentifier $eventSubscription.Name
+        Remove-Job -Name $eventSubscription.Name
     }
 
     # Read the file into a memory stream
