@@ -104,6 +104,9 @@ function Install ($arguments) {
     Install-Mod "2018" "LC_API" (Get-Arg $arguments "-lcapi") $lethalCompanyPath
     Install-Mod "bizzlemip" "BiggerLobby" (Get-Arg $arguments "-biggerlobby") $lethalCompanyPath
     Install-Mod "x753" "More_Suits" (Get-Arg $arguments "-moresuits") $lethalCompanyPath
+    Install-Mod "Sligili" "More_Emotes" (Get-Arg $arguments "-moreemotes") $lethalCompanyPath
+    Install-Mod "TV23" "BoomBoxNoPower" (Get-Arg $arguments "-boomboxnopower") $lethalCompanyPath
+    Install-Mod "rhydiaan" "NicerTeleporters" (Get-Arg $arguments "-nicerteleporters") $lethalCompanyPath
 }
 
 function Install-Mod($modAuthor, $modName, $version, $path) {
