@@ -107,6 +107,8 @@ function Install ($arguments) {
     Install-Mod "Sligili" "More_Emotes" (Get-Arg $arguments "-moreemotes") $lethalCompanyPath
     Install-Mod "TV23" "BoomBoxNoPower" (Get-Arg $arguments "-boomboxnopower") $lethalCompanyPath
     Install-Mod "stormytuna" "KindTeleporters" (Get-Arg $arguments "-kindteleporters") $lethalCompanyPath
+    Install-Mod "stormytuna" "BetterSecurityCameras" (Get-Arg $arguments "-bettersecuritycameras") $lethalCompanyPath
+    Install-Mod "stormytuna" "AllDecorAlways" (Get-Arg $arguments "-alldecoralways") $lethalCompanyPath
 }
 
 function Install-Mod($modAuthor, $modName, $version, $path) {
