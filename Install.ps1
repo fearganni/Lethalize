@@ -101,14 +101,12 @@ function Install ($arguments) {
     Write-Host "Installed BepInEx`n"
 
     # Can add your own arguments here
-    Install-Mod "2018" "LC_API" (Get-Arg $arguments "-lcapi") $lethalCompanyPath
-    Install-Mod "bizzlemip" "BiggerLobby" (Get-Arg $arguments "-biggerlobby") $lethalCompanyPath
-    Install-Mod "x753" "More_Suits" (Get-Arg $arguments "-moresuits") $lethalCompanyPath
-    Install-Mod "Sligili" "More_Emotes" (Get-Arg $arguments "-moreemotes") $lethalCompanyPath
-    Install-Mod "TV23" "BoomBoxNoPower" (Get-Arg $arguments "-boomboxnopower") $lethalCompanyPath
-    Install-Mod "stormytuna" "KindTeleporters" (Get-Arg $arguments "-kindteleporters") $lethalCompanyPath
-    Install-Mod "stormytuna" "BetterSecurityCameras" (Get-Arg $arguments "-bettersecuritycameras") $lethalCompanyPath
-    Install-Mod "stormytuna" "AllDecorAlways" (Get-Arg $arguments "-alldecoralways") $lethalCompanyPath
+    Install-Mod "2018" "LC_API" (Get-Arg $arguments "-lcApi") $lethalCompanyPath
+    Install-Mod "notnotnotswipez" "MoreCompany" (Get-Arg $arguments "-moreCompany") $lethalCompanyPath
+    Install-Mod "x753" "More_Suits" (Get-Arg $arguments "-moreSuits") $lethalCompanyPath
+    Install-Mod "Sligili" "More_Emotes" (Get-Arg $arguments "-moreEmotes") $lethalCompanyPath
+    Install-Mod "TV23" "BoomBoxNoPower" (Get-Arg $arguments "-boomboxNoPower") $lethalCompanyPath
+    Install-Mod "IntegrityChaos" "Diversity" (Get-Arg $arguments "-diversity") $lethalCompanyPath
 }
 
 function Install-Mod($modAuthor, $modName, $version, $path) {
