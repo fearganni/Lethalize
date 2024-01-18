@@ -105,7 +105,7 @@ function Install ($arguments) {
     Install-Mod "notnotnotswipez" "MoreCompany" (Get-Arg $arguments "-moreCompany") $lethalCompanyPath
     Install-Mod "x753" "More_Suits" (Get-Arg $arguments "-moreSuits") $lethalCompanyPath
     Install-Mod "Sligili" "More_Emotes" (Get-Arg $arguments "-moreEmotes") $lethalCompanyPath
-    Install-Mod "IntegrityChaos" "Diversity" (Get-Arg $arguments "-diversity") $lethalCompanyPath
+    Install-Mod "IntegrityChaos" "Diversity" (Get-Arg $arguments "-diversity") $bepInExPath
 }
 
 function Install-Mod($modAuthor, $modName, $version, $path) {
