@@ -105,7 +105,13 @@ function Install ($arguments) {
     Install-Mod "notnotnotswipez" "MoreCompany" (Get-Arg $arguments "-moreCompany") $lethalCompanyPath
     Install-Mod "x753" "More_Suits" (Get-Arg $arguments "-moreSuits") $lethalCompanyPath
     Install-Mod "Sligili" "More_Emotes" (Get-Arg $arguments "-moreEmotes") $lethalCompanyPath
-    Install-Mod "IntegrityChaos" "Diversity" (Get-Arg $arguments "-diversity") $bepInExPath
+    Install-Mod "IntegrityChaos" "Diversity" (Get-Arg $arguments "-diversity") $bepInExPath 
+    Install-Mod "anormaltwig" "LateCompany" (Get-Arg $arguments "-lateCompany") $lethalCompanyPath
+    Install-Mod "FlipMods" "ReservedItemSlotCore" (Get-Arg $arguments "-reservedSlotsCore") $lethalCompanyPath
+    Install-Mod "FlipMods" "ReservedWalkieSlot" (Get-Arg $arguments "-reservedWalkieSlot") $lethalCompanyPath
+    Install-Mod "FlipMods" "ReservedFlashlightSlot" (Get-Arg $arguments "-reservedFlashlightSlot") $lethalCompanyPath
+    Install-Mod "tinyhoot" "ShipLoot" (Get-Arg $arguments "-shipLoot") $bepInExPath
+    Install-Mod "TwinDimensionalProductions" "CoilHeadStare" (Get-Arg $arguments "-coilHeadStare") $lethalCompanyPath
 }
 
 function Install-Mod($modAuthor, $modName, $version, $path) {
