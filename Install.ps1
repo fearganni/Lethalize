@@ -88,7 +88,7 @@ function Install ($arguments) {
     }
     
     $bepInExPath = Join-Path $lethalCompanyPath "BepInEx"
-    $bepInExPluginPath = Join-Path $lethalCompanyPath "BepInEx" "plugins"
+    $bepInExPluginPath = Join-Path $lethalCompanyPath "BepInEx/plugins"
     Write-Host "Lethal Company path: $lethalCompanyPath`n"
 
     if (Test-Path $bepInExPath) {
