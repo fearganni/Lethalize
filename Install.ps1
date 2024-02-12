@@ -88,6 +88,7 @@ function Install ($arguments) {
     }
     
     $bepInExPath = Join-Path $lethalCompanyPath "BepInEx"
+    $bepInExPluginPath = Join-Path $lethalCompanyPath "BepInEx" "plugins"
     Write-Host "Lethal Company path: $lethalCompanyPath`n"
 
     if (Test-Path $bepInExPath) {
@@ -107,11 +108,11 @@ function Install ($arguments) {
     Install-Mod "Sligili" "More_Emotes" (Get-Arg $arguments "-moreEmotes") $lethalCompanyPath
     Install-Mod "IntegrityChaos" "Diversity" (Get-Arg $arguments "-diversity") $bepInExPath 
     Install-Mod "anormaltwig" "LateCompany" (Get-Arg $arguments "-lateCompany") $lethalCompanyPath
-    Install-Mod "FlipMods" "ReservedItemSlotCore" (Get-Arg $arguments "-reservedSlotsCore") $lethalCompanyPath
-    Install-Mod "FlipMods" "ReservedWalkieSlot" (Get-Arg $arguments "-reservedWalkieSlot") $lethalCompanyPath
-    Install-Mod "FlipMods" "ReservedFlashlightSlot" (Get-Arg $arguments "-reservedFlashlightSlot") $lethalCompanyPath
+    Install-Mod "FlipMods" "ReservedItemSlotCore" (Get-Arg $arguments "-reservedSlotsCore") $bepInExPluginPath
+    Install-Mod "FlipMods" "ReservedWalkieSlot" (Get-Arg $arguments "-reservedWalkieSlot") $bepInExPluginPath
+    Install-Mod "FlipMods" "ReservedFlashlightSlot" (Get-Arg $arguments "-reservedFlashlightSlot") $bepInExPluginPath
     Install-Mod "tinyhoot" "ShipLoot" (Get-Arg $arguments "-shipLoot") $bepInExPath
-    Install-Mod "TwinDimensionalProductions" "CoilHeadStare" (Get-Arg $arguments "-coilHeadStare") $lethalCompanyPath
+    Install-Mod "TwinDimensionalProductions" "CoilHeadStare" (Get-Arg $arguments "-coilHeadStare") $bepInExPluginPath
 }
 
 function Install-Mod($modAuthor, $modName, $version, $path) {
